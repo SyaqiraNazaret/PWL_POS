@@ -8,6 +8,41 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     public function index(){
+        $user = UserModel::create([
+            'username' => 'manager11',
+            'nama' => 'Manager11',
+            'password' => Hash::make('12345'),
+            'level_id' => 2,
+        ]);
+
+        $user->username = 'manager12';
+
+        // $user->isDirty(); // true
+        // $user->isDirty('username'); // true
+        // $user->isDirty('nama'); // false
+        // $user->isDirty(['nama', 'username']); // true
+
+        // $user->isClean(); // false
+        // $user->isClean('username'); // false
+        // $user->isClean('nama'); // true
+        // $user->isClean(['nama', 'username']); // false
+
+        $user->save();
+
+        // $user->isDirty(); // false
+        // $user->isClean(); // true
+
+        // dd($user->isDirty());
+
+        $user->wasChanged(); // false
+        $user->wasChanged('username'); // false
+        $user->wasChanged(['username', 'level_id']); // false
+        $user->wasChanged('nama'); // true
+        $user->wasChanged(['nama', 'username']); // false
+        dd($user->wasChanged(['nama', 'username'])); //true
+    }
+}
+
     // //Coba Akses model User Model
     // $user = UserModel::all(); //ambil semua data dari tabel m_user
     // return view('user', ['data' => $user]);
@@ -58,24 +93,22 @@ class UserController extends Controller
         //$user = UserModel::where('level_id', 2)->count();
         //dd($user);
 
-        $user = UserModel::firstOrNew(
-            [ // Kondisi pencarian (hanya berdasarkan username)
-                'username' => 'manager33',
-            ]
-        );
+        //Prak 4 - 2.4
+        // $user = UserModel::firstOrNew(
+        //     [ // Kondisi pencarian (hanya berdasarkan username)
+        //         'username' => 'manager33',
+        //     ]
+        // );
           
-        // Jika user baru, isi data tambahan
-        if (!$user->exists) {
-            $user->nama = 'Manager Tiga Tiga';
-            $user->password = Hash::make('12345'); 
-            $user->level_id = 2;
-            $user->save(); // Simpan user baru
-        }
-        return view('user', ['data' => $user]);
+        // // Jika user baru, isi data tambahan
+        // if (!$user->exists) {
+        //     $user->nama = 'Manager Tiga Tiga';
+        //     $user->password = Hash::make('12345'); 
+        //     $user->level_id = 2;
+        //     $user->save(); // Simpan user baru
+        // }
 
-        
     // coba akses model UserModel
         // $user = UserModel::all(); // ambil semua data dari tabel m_user
         // return view('user', ['data' => $user]);
-    }
-}
+
