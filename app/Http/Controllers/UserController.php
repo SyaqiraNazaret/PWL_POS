@@ -55,9 +55,25 @@ class UserController extends Controller
         // return view('user', ['data' => $user]);
 
         // $user = UserModel::where('username', 'manager9')->firstOrFail();
-        $user = UserModel::where('level_id', 2)->count();
+        //$user = UserModel::where('level_id', 2)->count();
         //dd($user);
+
+        $user = UserModel::firstOrNew(
+            [ // Kondisi pencarian (hanya berdasarkan username)
+                'username' => 'manager33',
+            ]
+        );
+          
+        // Jika user baru, isi data tambahan
+        if (!$user->exists) {
+            $user->nama = 'Manager Tiga Tiga';
+            $user->password = Hash::make('12345'); 
+            $user->level_id = 2;
+            $user->save(); // Simpan user baru
+        }
         return view('user', ['data' => $user]);
+
+        
     // coba akses model UserModel
         // $user = UserModel::all(); // ambil semua data dari tabel m_user
         // return view('user', ['data' => $user]);
