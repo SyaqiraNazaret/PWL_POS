@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 use App\Models\UserModel;
+use App\Models\LevelModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index(){
+    public function index()
+    {
+      $user = UserModel::with('level')->get();
+      return view('user', ['data' => $user]);
+    }
     // //Coba Akses model User Model
     // $user = UserModel::all(); //ambil semua data dari tabel m_user
     // return view('user', ['data' => $user]);
@@ -116,10 +121,11 @@ class UserController extends Controller
     //     ]);
     //     return redirect('/user');
 
-      // coba akses model UserModel
-      $user = UserModel::all(); // ambil semua data dari tabel m_user
-      return view('user', ['data' => $user]);
-    }
+      //coba akses model UserModel
+    //   $user = UserModel::all(); // ambil semua data dari tabel m_user
+    //   return view('user', ['data' => $user]);
+    // }
+
     public function tambah(){
       return view('user_tambah');
     }
@@ -161,4 +167,7 @@ class UserController extends Controller
 
       return redirect('/user');
     }
-}
+  }
+
+
+
