@@ -6,10 +6,10 @@ use App\Models\LevelModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\Validator;
+use App\Models\SupplierModel;
 
 
-class UserController extends Controller
+class SupplierController extends Controller
 {
   //Jobsheet 5 
   // Menampilkan halaman awal user
@@ -44,12 +44,11 @@ public function list(Request $request)
   // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
   ->addIndexColumn()
   ->addColumn('aksi', function ($user) { // menambahkan kolom aksi
-/*  $btn = '<a href="'.url('/user/' . $user->user_id).'" class="btn btn-info btn- sm">Detail</a> ';
+  $btn = '<a href="'.url('/user/' . $user->user_id).'" class="btn btn-info btn- sm">Detail</a> ';
   $btn .= '<a href="'.url('/user/' . $user->user_id . '/edit').'" class="btn btn- warning btn-sm">Edit</a> ';
   $btn .= '<form class="d-inline-block" method="POST" action="'. url('/user/'.$user->user_id).'">'
   . csrf_field() . method_field('DELETE') .
-  '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>'; */
-  $btn = '<button onclick="modalAdction(\'' . url('/user/' . $user->user_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button>';
+  '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';
   return $btn;
   })
   ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
@@ -61,7 +60,7 @@ public function create()
 {
     $breadcrumb = (object) [
         'title' => 'Tambah User',
-        'list'  => ['Home', 'User', 'Tambah']
+        'list'  => ['Home', 'Supplier', 'Tambah']
     ];
 
     $page = (object) [
@@ -178,40 +177,5 @@ public function update(Request $request, string $id)
       return redirect('/user')->with('eror','Data user gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
     }
   }
-  public function create_ajax()
-  {
-    $level = LevelModel::select('level_id', 'level_nama')->get();
-    
-    return view('user.create_ajax') 
-    ->with('level', $level);
-  }
-  public function store_ajax(Request $request)
-  {
-    //cek apakah request berupa ajax
-    if($request->ajax()|| $request->wantsJson()){
-      $rules = [
-        'level_id'  => 'required|integer',
-        'username'  => 'required|string|min:3|unique:m_user,username',
-        'nama'      => 'required|string|max:100',
-        'password'  => 'required|min:6',
-      ];
-      // use Illuminate\Support\Facades\Validator;
-      $validator = Validator::make($request->all(), $rules);
-
-      if ($validator->fails()) {
-        return response()->json([
-          'status' => false,
-          'message' => 'Validasi Gagal',
-          'msgField' => $validator->errors(), //pesan error validasi
-        ]);
-      }
-
-      UserModel::create($request->all());
-      return response()->json([
-        'status' => true,
-        'message' => 'Data user berhasil disimpan'
-      ]);
-    }
-    redirect('/');
-  }
 }
+
