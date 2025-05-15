@@ -1,0 +1,81 @@
+@extends('layouts.template')
+
+@section('content')
+<div class="card card-outline card-primary">
+    <div class="card-header">
+        <h3 class="card-title">{{ $page->title }}</h3>
+        <div class="card-tools">
+            <a class="btn btn-sm btn-primary mt-1" href="{{ url('user/create') }}">Tambah</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped table-hover table-sm" id="table_user">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Nama</th>
+                    <th>Level Pengguna</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+@endsection
+
+@push('css')
+<!-- Tambahkan file CSS tambahan jika diperlukan -->
+@endpush
+
+@push('js')
+<script>
+$(document).ready(function() {
+    var dataUser = $('#table_user').DataTable({
+        // Aktifkan jika menggunakan server-side processing
+        // serverSide: true,
+
+        ajax: {
+            url: "{{ url('user/list') }}",
+            dataType: "json",
+            type: "POST"
+        },
+
+        columns: [
+            {
+                // Nomor urut dari Laravel Datatables addIndexColumn()
+                data: "DT_RowIndex",
+                className: "text-center",
+                orderable: false,
+                searchable: false
+            },
+            {
+                data: "username",
+                className: "",
+                orderable: true,
+                searchable: true
+            },
+            {
+                data: "nama",
+                className: "",
+                orderable: true,
+                searchable: true
+            },
+            {
+                // Ambil data relasi level dari ORM
+                data: "level.level_nama",
+                className: "",
+                orderable: false,
+                searchable: false
+            },
+            {
+                data: "aksi",
+                className: "",
+                orderable: false,
+                searchable: false
+            }
+        ]
+    });
+});
+</script>
+@endpush
